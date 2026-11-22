@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "functions": { "api/watt2do.js": { "includeFiles": "public/**", "maxDuration": 30 } },
+  "routes": [{ "src": "/(.*)", "dest": "/api/watt2do?_watt2do_route=/$1" }]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "watt2do",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env index.mjs"
+  },
+  "dependencies": {
+    "google-auth-library": "^11.3.4"
+  }
+}

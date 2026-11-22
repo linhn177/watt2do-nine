@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Find safer battery and electronics recycling options around Hillsborough County.">
+  <title>Watt2Do | Find a recycling drop-off</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap">
+  <script>
+    (() => {
+      const key = 'watt2do.theme';
+      const system = matchMedia('(prefers-color-scheme: dark)');
+      let choice = 'system';
+      try {
+        const saved = localStorage.getItem(key);
+        if (saved === 'light' || saved === 'dark') choice = saved;
+      } catch {}
+      const apply = () => {
+        document.documentElement.dataset.theme = choice === 'system'
+          ? (system.matches ? 'dark' : 'light') : choice;
+      };
+      apply();
+      system.addEventListener('change',apply);
+      document.addEventListener('DOMContentLoaded',() => {
+        const control = document.getElementById('theme-choice');
+        control.value = choice;
+        control.addEventListener('change',() => {
+          choice = control.value;
+          try { localStorage.setItem(key,choice); } catch {}
+          apply();
+        });
+      });
+    })();
+  </script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+  <link rel="stylesheet" href="/screen.css">
+  <script defer src="/static/map.js"></script>
+  <script type="module" src="/screen.mjs"></script>
+  <script type="module" src="/account.mjs"></script>
+</head>
+<body>
+  <header class="top">
+    <a class="wordmark" href="/"><svg width="32" height="18" viewBox="0 0 64 36" fill="none" aria-hidden="true"><rect x="2" y="2" width="54" height="32" rx="8" stroke="currentColor" stroke-width="4"/><rect x="59" y="12" width="5" height="12" rx="2" fill="currentColor"/><polygon points="33,6 21,20 29,20 25,30 38,15 30,15" fill="currentColor"/></svg><span>Watt<b>2</b>Do</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="#scan">Scan</a>
+      <a href="#scan-history">History</a>
+      <a href="#identify">Drop-offs</a>
+      <a href="#guides">Official guides</a>
+    </nav>
+    <div class="header-settings">
+      <select id="theme-choice" aria-label="Color theme">
+        <option value="system">System</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+      <button class="secondary" type="button" id="account-button">Sign in</button>
+    </div>
+  </header>
+  <dialog id="account-dialog" class="surface" aria-labelledby="account-title">
+    <h2 id="account-title">Continue to Watt2Do</h2>
+    <p>Scan items and find drop-offs with or without an account.</p>
+    <div class="account-options">
+      <div id="google-sign-in" hidden></div>
+      <button class="secondary" type="button" id="account-guest">Continue as guest</button>
+    </div>
+    <p id="account-message" role="status"></p>
+  </dialog>
+  <main class="shell">
+    <section class="hero" aria-labelledby="home-title">
+      <p class="region">Hillsborough County, Florida</p>
+      <h1 id="home-title">Where does this go?</h1>
+      <p>Identify a battery or electronic device, check how to handle it, and find a nearby drop-off.</p>
+      <div class="home-cards">
+        <a class="button primary home-card" href="#scan">
+          <span class="card-icon" aria-hidden="true">&#9673;</span>
+          <span>Scan an item<small>Use your camera or upload a photo</small></span>
+        </a>
+        <a class="button secondary home-card" href="#identify">
+          <span class="card-icon" aria-hidden="true">&#128205;</span>
+          <span>Find drop-offs<small>Choose an item and its condition</small></span>
+        </a>
+      </div>
+    </section>
+    <section id="scan" class="surface">
+      <h2>Scan an item</h2>
+      <p>Hold one item in view with its label facing the camera.</p>
+      <p class="note">Scanning sends up to three snapshots to Google Gemini. Keep personal information out of the frame.</p>
+      <div class="actions" id="scan-controls" hidden>
+        <button id="start" class="primary" type="button">Start live scan</button>
+        <button id="stop" class="secondary" type="button" hidden>Stop camera</button>
+        <label class="button secondary upload">Upload photo<input id="photo" type="file" accept="image/jpeg,image/png,image/webp"></label>
+      </div>
+      <div id="camera-box" hidden><video id="camera" autoplay muted playsinline aria-label="Live camera preview"></video></div>
+      <p id="scan-message" role="status"></p>
+      <div id="recognition" hidden><img id="snapshot" alt="Scanned item"><p id="recognition-text"></p></div>
+    </section>
+    <section id="scan-history" class="surface" aria-labelledby="scan-history-title">
+      <div class="history-heading">
+        <h2 id="scan-history-title">Recent scans</h2>
+        <button id="scan-history-clear" class="secondary" type="button" hidden>Clear history</button>
+      </div>
+      <p class="note">Saved in this browser. Photos are excluded.</p>
+      <p id="scan-history-empty" role="status">No scans yet.</p>
+      <ul id="scan-history-list" aria-label="Recent scan results"></ul>
+    </section>
+    <section id="identify" class="surface">
+      <h2>Choose the item and condition</h2>
+      <form id="item-form">
+        <div class="fields">
+          <label>Item type<select id="item" required><option value="">Choose a type</option></select></label>
+          <label>Condition<select id="condition" required><option value="">Choose a condition</option></select></label>
+        </div>
+        <div id="condition-review" hidden>
+          <p id="condition-suggestion" class="note" role="status"></p>
+          <label><input id="condition-checked" type="checkbox"> I checked the item and confirmed the condition above.</label>
+        </div>
+        <button id="submit-item" class="primary" disabled>Show guidance and drop-offs</button>
+      </form>
+      <p id="plan-message" role="status"></p>
+      <article id="advice" hidden aria-live="polite"></article>
+    </section>
+    <section id="results" class="surface" hidden>
+      <h2>Find a drop-off</h2>
+      <p id="map-message" role="status"></p>
+      <div id="map" aria-label="Drop-off locations map" hidden></div>
+      <ul id="place-list"></ul>
+      <a id="locator" href="https://locator.batterynetwork.org/" target="_blank" rel="noopener" hidden>Find more locations with The Battery Network</a>
+    </section>
+  </main>
+  <footer id="guides" class="shell">
+    <strong>Watt2Do</strong>
+    <a href="https://hcfl.gov/residents/property-owners-and-renters/trash-and-recycling/discarding-batteries">County battery guide</a>
+    <a href="https://hcfl.gov/residents/property-owners-and-renters/trash-and-recycling/discarding-paint-and-electronics">County electronics guide</a>
+    <a href="https://www.epa.gov/recycle/used-lithium-ion-batteries">EPA battery guide</a>
+  </footer>
+  <script type="module" src="/watty.mjs"></script>
+  <button type="button" class="primary" id="watty-launcher" aria-controls="watty-panel" aria-expanded="false"><svg width="28" height="28" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="15" y="2" width="10" height="5" rx="2" fill="#0E1410"/><rect x="7" y="6" width="26" height="32" rx="9" fill="#0E1410"/><circle cx="15.5" cy="20" r="3" fill="#C6F432"/><circle cx="24.5" cy="20" r="3" fill="#C6F432"/><path d="M14 27Q20 33 26 27" stroke="#C6F432" stroke-width="2.2" stroke-linecap="round"/></svg>Ask Watty</button>
+  <section id="watty-panel" aria-labelledby="watty-title" hidden>
+    <header><h2 id="watty-title"><svg width="28" height="28" viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="15" y="2" width="10" height="5" rx="2" fill="#0E1410"/><rect x="7" y="6" width="26" height="32" rx="9" fill="#0E1410"/><circle cx="15.5" cy="20" r="3" fill="#C6F432"/><circle cx="24.5" cy="20" r="3" fill="#C6F432"/><path d="M14 27Q20 33 26 27" stroke="#C6F432" stroke-width="2.2" stroke-linecap="round"/></svg>Watty</h2><button type="button" class="secondary" id="watty-close" aria-label="Close Watty">&#215;</button></header>
+    <div id="watty-log" role="log" aria-label="Chat messages">
+      <p>Ask how to handle a battery or where to recycle an electronic item.</p>
+    </div>
+    <form id="watty-form">
+      <input id="watty-input" aria-label="Your question" maxlength="500" placeholder="Where can I recycle AA batteries?" required>
+      <button type="submit" class="primary" id="watty-send">Send</button>
+    </form>
+  </section>
+</body>
+</html>
