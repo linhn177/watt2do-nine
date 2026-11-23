@@ -127,11 +127,11 @@ footer { display:flex; flex-wrap:wrap; gap:1rem; padding:1.5rem 0 2rem; color:va
   display:block;
   background:transparent;
   color:var(--ink);
-  padding:clamp(1.75rem,5vw,3.5rem) 0 1.25rem;
+  padding:clamp(.9rem,2vw,1.5rem) 0 1.25rem;
 }
 .hero h1 { font-size:clamp(2.5rem,6vw,4.6rem); letter-spacing:-.065em; margin:.45rem 0 .8rem; }
 .hero p { max-width:38rem; }
-.region { color:var(--highlight); }
+.region { color:var(--highlight); margin-top:0; }
 .home-cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin-top:1.5rem; }
 .hero .home-card {
   display:grid;
@@ -214,3 +214,17 @@ footer { display:flex; flex-wrap:wrap; gap:1rem; padding:1.5rem 0 2rem; color:va
 @media(max-width:380px) { .top { gap:.35rem; } }
 
 #scan-history-more { margin-top:.75rem; }
+
+.risk-tabs { display:flex; gap:.45rem; overflow-x:auto; padding:.35rem .2rem .65rem; }
+.risk-tabs button { flex:0 0 auto; white-space:nowrap; }
+.risk-tabs [aria-selected="true"] { background:var(--accent); color:var(--on-accent); border-color:var(--accent); }
+.risk-panel { background:var(--paper); border:1px solid var(--border); border-radius:.9rem; padding:clamp(.9rem,3vw,1.5rem); }
+.risk-panel h3 { margin:0; font-size:clamp(1.8rem,4vw,2.8rem); line-height:1.1; color:var(--highlight); }
+.risk-panel .risk-context { font-weight:700; }
+.risk-panel a { font-size:.92rem; font-weight:650; }
+
+
+.risk-measures { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.7rem; margin:.9rem 0; }
+.risk-measures div { padding:.75rem; background:var(--surface); border:1px solid var(--border); border-radius:.65rem; }
+.risk-measures dt { font-weight:650; }
+.risk-measures dd { margin:0; color:var(--highlight); font-size:1.35rem; font-weight:700; }

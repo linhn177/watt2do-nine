@@ -152,7 +152,7 @@ export async function handleRequest(request,response) {
           !messages.every(message => typeof message === 'string' && message.trim() && message.length <= 500)) {
         throw new RequestError(400,'Enter a question up to 500 characters.');
       }
-      return respond(response,200,await chat(messages,key,model));
+      return respond(response,200,await chat(messages,key,model,input.scan));
     }
     if (request.method === 'POST' && path === '/api/plan') return respond(response,200,await plan(request));
     if (request.method === 'POST' && path === '/api/scan') return respond(response,200,await scan(request));

@@ -1,4 +1,26 @@
 const byId = id => document.getElementById(id);
+const riskTabs = [...document.querySelectorAll('.risk-tabs [role="tab"]')];
+function selectRiskTab(active) {
+  for (const tab of riskTabs) {
+    const selected = tab === active;
+    tab.setAttribute('aria-selected',String(selected));
+    tab.tabIndex = selected ? 0 : -1;
+    byId(tab.getAttribute('aria-controls')).hidden = !selected;
+  }
+}
+for (const [index,tab] of riskTabs.entries()) {
+  tab.addEventListener('click',() => selectRiskTab(tab));
+  tab.addEventListener('keydown',event => {
+    const next = {ArrowRight:(index + 1) % riskTabs.length,
+      ArrowLeft:(index + riskTabs.length - 1) % riskTabs.length,
+      Home:0,End:riskTabs.length - 1}[event.key];
+    if (next === undefined) return;
+    event.preventDefault();
+    selectRiskTab(riskTabs[next]);
+    riskTabs[next].focus();
+  });
+}
+
 const video = byId('camera');
 const item = byId('item');
 const condition = byId('condition');
@@ -6,6 +28,17 @@ const conditionReview = byId('condition-review');
 const conditionChecked = byId('condition-checked');
 let catalog;
 let scanning;
+let lastScan;
+
+export function getWattyScanContext() {
+  if (!lastScan) return undefined;
+  const type = item.value || lastScan.type;
+  return {
+    type,condition:condition.value || lastScan.condition,
+    alkaline:type === lastScan.type && lastScan.alkaline,
+    confirmed:conditionChecked.checked
+  };
+}
 let imageUrl;
 let planRequest;
 let mapRender = Promise.resolve();
@@ -63,7 +96,7 @@ function renderScanHistory() {
 }
 
 try {
-  const stored = JSON.parse(localStorage.getItem(historyKey) || '[]');
+  const stored = JSON.parse(sessionStorage.getItem(historyKey) || '[]');
   if (Array.isArray(stored)) {
     scanHistory = stored.filter(entry => entry && typeof entry.type === 'string' &&
       typeof entry.condition === 'string' && Number.isFinite(entry.date) &&
@@ -73,7 +106,7 @@ try {
 
 function saveScanHistory() {
   try {
-    localStorage.setItem(historyKey,JSON.stringify(scanHistory));
+    sessionStorage.setItem(historyKey,JSON.stringify(scanHistory));
   } catch {}
   renderScanHistory();
 }
@@ -139,6 +172,7 @@ function stopScan(message = '') {
   if (message) byId('scan-message').textContent = message;
 }
 function beginScan() {
+  lastScan = undefined;
   stopScan();
   clearPlan();
   byId('recognition').hidden = true;
@@ -160,6 +194,7 @@ function recognize(frame,result) {
   item.value = result.type === 'unsure' ? '' : result.type;
   const suggestion = Object.hasOwn(catalog.conditions,result.condition) ? result.condition : 'unsure';
   condition.value = suggestion;
+  lastScan = {type:result.type,condition:suggestion,alkaline:/\balkaline\b/i.test(result.markings || '')};
   if (!['unsure','unknownBattery'].includes(result.type) &&
       [...item.options].some(option => option.value === result.type)) {
     recordHistory(result.type,suggestion,'scan');
