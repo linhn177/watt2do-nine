@@ -38,14 +38,13 @@
   <link rel="stylesheet" href="/screen.css">
   <script defer src="/static/map.js"></script>
   <script type="module" src="/screen.mjs"></script>
-  <script type="module" src="/account.mjs"></script>
 </head>
 <body>
   <header class="top">
     <a class="wordmark" href="/"><svg width="32" height="18" viewBox="0 0 64 36" fill="none" aria-hidden="true"><rect x="2" y="2" width="54" height="32" rx="8" stroke="currentColor" stroke-width="4"/><rect x="59" y="12" width="5" height="12" rx="2" fill="currentColor"/><polygon points="33,6 21,20 29,20 25,30 38,15 30,15" fill="currentColor"/></svg><span>Watt<b>2</b>Do</span></a>
     <nav class="site-nav" aria-label="Main">
       <a href="#scan">Scan</a>
-      <a href="#scan-history">History</a>
+      <a id="scan-history-nav" href="#scan-history">History</a>
       <a href="#identify">Drop-offs</a>
       <a href="#guides">Official guides</a>
     </nav>
@@ -55,18 +54,8 @@
         <option value="light">Light</option>
         <option value="dark">Dark</option>
       </select>
-      <button class="secondary" type="button" id="account-button">Sign in</button>
     </div>
   </header>
-  <dialog id="account-dialog" class="surface" aria-labelledby="account-title">
-    <h2 id="account-title">Continue to Watt2Do</h2>
-    <p>Scan items and find drop-offs with or without an account.</p>
-    <div class="account-options">
-      <div id="google-sign-in" hidden></div>
-      <button class="secondary" type="button" id="account-guest">Continue as guest</button>
-    </div>
-    <p id="account-message" role="status"></p>
-  </dialog>
   <main class="shell">
     <section class="hero" aria-labelledby="home-title">
       <p class="region">Hillsborough County, Florida</p>
@@ -98,12 +87,13 @@
     </section>
     <section id="scan-history" class="surface" aria-labelledby="scan-history-title">
       <div class="history-heading">
-        <h2 id="scan-history-title">Recent scans</h2>
+        <h2 id="scan-history-title">Recent searches</h2>
         <button id="scan-history-clear" class="secondary" type="button" hidden>Clear history</button>
       </div>
       <p class="note">Saved in this browser. Photos are excluded.</p>
-      <p id="scan-history-empty" role="status">No scans yet.</p>
-      <ul id="scan-history-list" aria-label="Recent scan results"></ul>
+      <p id="scan-history-empty" role="status">No searches yet.</p>
+      <ul id="scan-history-list" aria-label="Recent search results"></ul>
+      <button id="scan-history-more" class="secondary" type="button" aria-controls="scan-history-list" aria-expanded="false" hidden>See more</button>
     </section>
     <section id="identify" class="surface">
       <h2>Choose the item and condition</h2>

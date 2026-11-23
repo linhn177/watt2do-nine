@@ -3,7 +3,6 @@ import {pathToFileURL} from 'node:url';
 import {readFile} from 'node:fs/promises';
 import {advice,conditions,groups,labels,locations,zipCenters} from './directory.mjs';
 
-import {handleAccount} from './account.mjs';
 
 import {chat} from './chat.mjs';
 
@@ -12,8 +11,8 @@ const assets = {
   '/icon-180.png':['icon-180.png','image/png'],
   '/icon-192.png':['icon-192.png','image/png'],
   '/icon-512.png':['icon-512.png','image/png'],
+  '/icon-maskable-512.png':['icon-maskable-512.png','image/png'],
   '/watty.mjs':['watty.mjs','text/javascript'],
-  '/account.mjs':['account.mjs','text/javascript'],
   '/':['page.html','text/html'],
   '/screen.css':['screen.css','text/css'],
   '/screen.mjs':['screen.mjs','text/javascript'],
@@ -136,9 +135,6 @@ export async function handleRequest(request,response) {
       const content = await readFile(new URL('./public/' + file,import.meta.url));
       response.writeHead(200,{'Content-Type':type.startsWith('image/') ? type : type + '; charset=utf-8','X-Content-Type-Options':'nosniff','Cache-Control':'no-cache'});
       return response.end(content);
-    }
-    if (path === '/api/account' && ['GET','POST'].includes(request.method)) {
-      return await handleAccount(request,response,{readBody,respond,RequestError});
     }
     if (request.method === 'GET' && path === '/api/maps-config') {
       return respond(response,200,{ok:true,mapsKey:process.env.GOOGLE_MAPS_BROWSER_KEY?.trim() || ''});

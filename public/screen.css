@@ -154,8 +154,6 @@ footer { display:flex; flex-wrap:wrap; gap:1rem; padding:1.5rem 0 2rem; color:va
 #camera-box::after { inset:18% 26%; border-color:#c6f432; border-radius:1rem; }
 #scan-message { font-weight:700; color:var(--scan-text); }
 
-#account-dialog { margin:auto; max-width:min(26rem,calc(100% - 2rem)); }
-#account-dialog::backdrop { background:#0e141088; }
 #watty-launcher { border-radius:999px; }
 #watty-launcher, #watty-title { display:inline-flex; align-items:center; gap:.35rem; }
 #watty-panel header { background:var(--chat-header); border-radius:1rem 1rem 0 0; }
@@ -210,25 +208,9 @@ footer { display:flex; flex-wrap:wrap; gap:1rem; padding:1.5rem 0 2rem; color:va
 }
 .header-settings { display:flex; align-items:center; gap:.45rem; min-width:0; }
 #theme-choice { width:auto; padding:.5rem; }
-#account-button { max-width:11rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .primary { color:var(--on-accent); }
 .primary .card-icon { color:var(--on-accent); background:#0e141012; }
 @media(max-width:750px) { .site-nav { display:none; } }
-@media(max-width:380px) { .top { gap:.35rem; } #account-button { max-width:6.5rem; padding-inline:.5rem; } }
+@media(max-width:380px) { .top { gap:.35rem; } }
 
-.account-options { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; width:min(100%,400px); }
-.account-options { --account-button-border:#333; }
-#google-sign-in { position:relative; height:40px; border-radius:4px; }
-#google-sign-in::after {
-  content:''; position:absolute; inset:0; border:1px solid var(--account-button-border);
-  border-radius:inherit; pointer-events:none;
-}
-#google-sign-in > div { clip-path:inset(0 round 4px); max-width:100%; max-height:40px; }
-#google-sign-in:focus-within { outline:2px solid var(--highlight); outline-offset:3px; }
-#account-guest {
-  width:100%; height:40px; padding:0 .75rem; border-radius:4px;
-  border-color:var(--account-button-border); font:500 14px/20px system-ui,sans-serif;
-}
-:root[data-theme="dark"] .account-options { --account-button-border:#8e918f; }
-:root[data-theme="dark"] :is(#google-sign-in,#account-guest) { background:#242424; color:#e3e3e3; }
-:root[data-theme="dark"] #google-sign-in > div { clip-path:inset(3px 1px 1px round 3px); }
+#scan-history-more { margin-top:.75rem; }

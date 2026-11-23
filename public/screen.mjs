@@ -31,12 +31,36 @@ async function api(path,options) {
   return result;
 }
 
-const historyKey = 'watt2do.scanHistory.v1';
 const historyLimit = 20;
+const historyPreview = 3;
 const historyList = byId('scan-history-list');
 const historyEmpty = byId('scan-history-empty');
 const historyClear = byId('scan-history-clear');
+const historyMore = byId('scan-history-more');
+const historyKey = 'watt2do.scanHistory.v1';
+let showFullHistory = false;
 let scanHistory = [];
+let pendingScanEntry;
+
+function renderScanHistory() {
+  const visible = showFullHistory ? scanHistory : scanHistory.slice(0,historyPreview);
+  const entries = visible.map(entry => {
+    const row = textElement('li','');
+    const date = new Date(entry.date);
+    const time = textElement('time',date.toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'}));
+    time.dateTime = date.toISOString();
+    const typeLabel = [...item.options].find(option => option.value === entry.type)?.textContent || entry.type;
+    const conditionLabel = [...condition.options].find(option => option.value === entry.condition)?.textContent || 'Condition unsure';
+    row.append(textElement('strong',typeLabel),textElement('span',(entry.source === 'search' ? 'Condition: ' : 'Suggested condition: ') + conditionLabel),time);
+    return row;
+  });
+  historyList.replaceChildren(...entries);
+  historyEmpty.hidden = entries.length > 0;
+  historyClear.hidden = entries.length === 0;
+  historyMore.hidden = scanHistory.length <= historyPreview;
+  historyMore.textContent = showFullHistory ? 'See less' : 'See more';
+  historyMore.setAttribute('aria-expanded',String(showFullHistory));
+}
 
 try {
   const stored = JSON.parse(localStorage.getItem(historyKey) || '[]');
@@ -45,38 +69,35 @@ try {
       typeof entry.condition === 'string' && Number.isFinite(entry.date) &&
       Number.isFinite(new Date(entry.date).getTime())).slice(0,historyLimit);
   }
-} catch {
-  // Keep history usable on this page if browser storage is unavailable.
-}
-
-function renderScanHistory() {
-  const entries = scanHistory.map(entry => {
-    const row = textElement('li','');
-    const date = new Date(entry.date);
-    const time = textElement('time',date.toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'}));
-    time.dateTime = date.toISOString();
-    const typeLabel = [...item.options].find(option => option.value === entry.type)?.textContent || entry.type;
-    const conditionLabel = [...condition.options].find(option => option.value === entry.condition)?.textContent || 'Condition unsure';
-    row.append(textElement('strong',typeLabel),textElement('span','Suggested condition: ' + conditionLabel),time);
-    return row;
-  });
-  historyList.replaceChildren(...entries);
-  historyEmpty.hidden = entries.length > 0;
-  historyClear.hidden = entries.length === 0;
-}
+} catch {}
 
 function saveScanHistory() {
   try {
     localStorage.setItem(historyKey,JSON.stringify(scanHistory));
-  } catch {
-    // Keep history usable on this page if browser storage is unavailable.
-  }
+  } catch {}
   renderScanHistory();
+}
+
+function recordHistory(type,condition,source) {
+  const entry = {type,condition,source,date:Date.now()};
+  if (source === 'search' && pendingScanEntry?.type === type && scanHistory[0] === pendingScanEntry) {
+    scanHistory.shift();
+  }
+  pendingScanEntry = source === 'scan' ? entry : undefined;
+  scanHistory.unshift(entry);
+  scanHistory.length = Math.min(scanHistory.length,historyLimit);
+  saveScanHistory();
 }
 
 historyClear.addEventListener('click',() => {
   scanHistory = [];
+  pendingScanEntry = undefined;
+  showFullHistory = false;
   saveScanHistory();
+});
+historyMore.addEventListener('click',() => {
+  showFullHistory = !showFullHistory;
+  renderScanHistory();
 });
 
 try {
@@ -141,9 +162,7 @@ function recognize(frame,result) {
   condition.value = suggestion;
   if (!['unsure','unknownBattery'].includes(result.type) &&
       [...item.options].some(option => option.value === result.type)) {
-    scanHistory.unshift({type:result.type,condition:suggestion,date:Date.now()});
-    scanHistory.length = Math.min(scanHistory.length,historyLimit);
-    saveScanHistory();
+    recordHistory(result.type,suggestion,'scan');
   }
   conditionReview.hidden = false;
   conditionChecked.checked = false;
@@ -267,7 +286,7 @@ function showSites(sites,signal) {
     const card = textElement('li','');
     card.style.cursor = 'pointer';
     card.append(textElement('h3',site.name),textElement('p',site.address),
-      textElement('p',site.miles.toFixed(1) + ' mi · ' + site.hours),textElement('p',site.notes));
+      textElement('p',site.miles.toFixed(1) + ' mi from central Tampa · ' + site.hours),textElement('p',site.notes));
     if (site.event) card.append(textElement('p','Additional HHW event: ' + site.event + ' each month, 8 am–2 pm'));
     if (site.phone) card.append(anchor('Call ' + site.phone,'tel:' + site.phone));
     if (!site.callFirst) card.append(anchor('Directions',directions(site)));
@@ -304,20 +323,22 @@ async function loadPlan() {
   clearPlan();
   planRequest = new AbortController();
   const signal = planRequest.signal;
+  const selection = {type:item.value,condition:condition.value};
   byId('plan-message').textContent = 'Finding the right next step…';
   try {
     const result = await api('/api/plan',{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({type:item.value,condition:condition.value}),signal
+      body:JSON.stringify(selection),signal
     });
     if (signal.aborted) return;
     showAdvice(result.advice);
+    recordHistory(selection.type,selection.condition,'search');
     byId('plan-message').textContent = '';
     if (condition.value !== 'intact' || ['unsure','unknownBattery'].includes(item.value)) return;
     byId('results').hidden = false;
     byId('locator').hidden = !result.advice.locator;
     byId('map-message').textContent = result.sites.length
-      ? result.sites.length + ' drop-off options in the Tampa area.'
+      ? result.sites.length + ' drop-off options in Hillsborough County and nearby communities.'
       : 'No matching drop-offs are listed for this item.';
     showSites(result.sites,signal);
   } catch (error) {

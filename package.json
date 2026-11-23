@@ -7,8 +7,5 @@
   },
   "scripts": {
     "start": "node --env-file-if-exists=.env index.mjs"
-  },
-  "dependencies": {
-    "google-auth-library": "^11.3.4"
   }
 }
