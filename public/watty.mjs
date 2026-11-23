@@ -1,3 +1,5 @@
+import {getWattyScanContext} from './screen.mjs';
+
 const launcher = document.getElementById('watty-launcher');
 const panel = document.getElementById('watty-panel');
 const close = document.getElementById('watty-close');
@@ -45,7 +47,7 @@ form.addEventListener('submit',async event => {
   try {
     const response = await fetch('/api/chat',{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({messages:[...questions,message].slice(-4)})
+      body:JSON.stringify({messages:[...questions,message].slice(-4),scan:getWattyScanContext()})
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error);
@@ -56,6 +58,18 @@ form.addEventListener('submit',async event => {
     paragraph(reply,data.title,'strong');
     for (const step of data.steps) paragraph(reply,step);
     if (data.phone) link(reply,'Call ' + data.phone,'tel:' + data.phone);
+    if (data.source) link(reply,'Source',data.source);
+    if (data.site) {
+      paragraph(reply,data.site.name,'strong');
+      paragraph(reply,data.site.address);
+      if (data.site.phone) link(reply,'Call ' + data.site.phone,'tel:' + data.site.phone);
+    }
+    if (data.action === 'scan') {
+      link(reply,'Open scanner','#scan').addEventListener('click',() => toggle(false));
+    }
+    if (data.action === 'history') {
+      link(reply,'Open Recent searches','#scan-history').addEventListener('click',() => toggle(false));
+    }
     if (data.showDropoffs) {
       const dropoffs = link(reply,'Find drop-offs','#identify');
       dropoffs.addEventListener('click',() => toggle(false));

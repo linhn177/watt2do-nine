@@ -2,7 +2,7 @@
 
 [Live app](https://watt2do-nine.vercel.app)
 
-Watt2Do helps Hillsborough County residents identify batteries and electronics, check what to do with them, and find nearby drop-offs. It includes a webcam and photo scanner, browser-local search history, a Google Maps view, and a short-answer assistant named Watty.
+Watt2Do helps Hillsborough County residents identify batteries and electronics, check what to do with them, and find nearby drop-offs. It includes a webcam and photo scanner, tab-only search history, a Google Maps view, sourced battery and e-waste risk tabs, and a short-answer assistant named Watty.
 
 ## Run locally
 
@@ -11,7 +11,7 @@ Use Node.js 22 or newer. Run `npm ci`, copy `.env.example` to `.env`, then run `
 - `GEMINI_API_KEY` enables image scanning and helps Watty interpret questions.
 - `GOOGLE_MAPS_BROWSER_KEY` enables the map. Enable Maps JavaScript API and allow `http://localhost:3001/*` and your production website in the browser key's website restrictions.
 
-Vercel serves the Node handler in `api/watt2do.js`. Set the same environment variable names in Vercel Production and redeploy after changes. Recent searches stay in the current browser and record item type, condition, and time for both scans and manual lookups.
+Vercel serves the Node handler in `api/watt2do.js`. Set the same environment variable names in Vercel Production and redeploy after changes. Recent searches last until the current tab closes and record item type, condition, and time for both scans and manual lookups.
 
 ## Tools and AI disclosure
 

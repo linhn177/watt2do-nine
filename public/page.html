@@ -44,6 +44,7 @@
     <a class="wordmark" href="/"><svg width="32" height="18" viewBox="0 0 64 36" fill="none" aria-hidden="true"><rect x="2" y="2" width="54" height="32" rx="8" stroke="currentColor" stroke-width="4"/><rect x="59" y="12" width="5" height="12" rx="2" fill="currentColor"/><polygon points="33,6 21,20 29,20 25,30 38,15 30,15" fill="currentColor"/></svg><span>Watt<b>2</b>Do</span></a>
     <nav class="site-nav" aria-label="Main">
       <a href="#scan">Scan</a>
+      <a href="#battery-risks">Risks</a>
       <a id="scan-history-nav" href="#scan-history">History</a>
       <a href="#identify">Drop-offs</a>
       <a href="#guides">Official guides</a>
@@ -72,6 +73,58 @@
         </a>
       </div>
     </section>
+    <section id="battery-risks" class="surface" aria-labelledby="battery-risks-title">
+      <h2 id="battery-risks-title">Battery and e-waste risks</h2>
+      <div class="risk-tabs" role="tablist" aria-label="Battery and e-waste categories">
+        <button id="risk-tab-lead" type="button" class="secondary" role="tab" aria-controls="risk-lead" aria-selected="true" tabindex="0">Lead-acid</button>
+        <button id="risk-tab-lithium" type="button" class="secondary" role="tab" aria-controls="risk-lithium" aria-selected="false" tabindex="-1">Lithium</button>
+        <button id="risk-tab-nicd" type="button" class="secondary" role="tab" aria-controls="risk-nicd" aria-selected="false" tabindex="-1">Nickel-cadmium</button>
+        <button id="risk-tab-coin" type="button" class="secondary" role="tab" aria-controls="risk-coin" aria-selected="false" tabindex="-1">Button and coin cells</button>
+        <button id="risk-tab-alkaline" type="button" class="secondary" role="tab" aria-controls="risk-alkaline" aria-selected="false" tabindex="-1">Alkaline</button>
+        <button id="risk-tab-ewaste" type="button" class="secondary" role="tab" aria-controls="risk-ewaste" aria-selected="false" tabindex="-1">E-waste</button>
+      </div>
+      <article id="risk-lead" class="risk-panel" role="tabpanel" aria-labelledby="risk-tab-lead" tabindex="0">
+        <h3>About 10 kg</h3>
+        <p class="risk-context">Average lead content in a lead-acid battery, according to WHO</p>
+        <p>Lead from improperly handled batteries can contaminate soil and dust. Children can be exposed by swallowing or breathing contaminated dust. WHO says no level of lead exposure is known to be harmless.</p>
+        <a href="https://www.who.int/news-room/questions-and-answers/item/chemical-safety-lead-poisoning/" target="_blank" rel="noopener noreferrer">WHO lead poisoning guidance</a>
+      </article>
+      <article id="risk-lithium" class="risk-panel" role="tabpanel" aria-labelledby="risk-tab-lithium" tabindex="0" hidden>
+        <h3>245 fires</h3>
+        <p class="risk-context">Fires identified at 64 U.S. waste facilities, 2013&ndash;2020</p>
+        <p>EPA identified fires caused or likely caused by lithium-ion or lithium-metal batteries. This is a count of documented incidents across the facilities studied.</p>
+        <a href="https://www.epa.gov/system/files/documents/2021-08/lithium-ion-battery-report-update-7.01_508.pdf" target="_blank" rel="noopener noreferrer">EPA battery fire report</a>
+      </article>
+      <article id="risk-nicd" class="risk-panel" role="tabpanel" aria-labelledby="risk-tab-nicd" tabindex="0" hidden>
+        <h3>About 50 days</h3>
+        <p class="risk-context">Time until leaching in one laboratory water test</p>
+        <p>Guo and colleagues immersed spent NiCd batteries in four types of water. They observed leaching in about 50 days at the tested salt concentration and in under 100 days in the other samples. Timing depends on the test conditions.</p>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/29218575/" target="_blank" rel="noopener noreferrer">Guo et al. (2018)</a>
+      </article>
+      <article id="risk-coin" class="risk-panel" role="tabpanel" aria-labelledby="risk-tab-coin" tabindex="0" hidden>
+        <h3>As little as 2 hours</h3>
+        <p class="risk-context">Time for severe burns if a battery lodges in the esophagus</p>
+        <p>Large lithium coin cells, around 20 mm, can lodge in a child's esophagus. The battery can create an electrical current that burns tissue. A study of 56,535 reported battery ingestions found the share of button battery ingestions with serious or fatal outcomes rose 6.7-fold from 1985 to 2009. If you suspect a child swallowed a button battery, seek emergency care immediately.</p>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/20498173/" target="_blank" rel="noopener noreferrer">Litovitz et al. (2010)</a>
+      </article>
+      <article id="risk-alkaline" class="risk-panel" role="tabpanel" aria-labelledby="risk-tab-alkaline" tabindex="0" hidden>
+        <h3>Seawater reached pH 11 in 30 days</h3>
+        <p class="risk-context">In a lab test with whole, spent alkaline AA batteries</p>
+        <dl class="risk-measures" aria-label="Lab readings after 30 days with alkaline AA batteries">
+          <div><dt>Seawater</dt><dd>pH 11</dd></div>
+          <div><dt>Landfill leachate</dt><dd>pH 10</dd></div>
+        </dl>
+        <p>Researchers submerged whole, spent AA batteries in rainwater, seawater, or landfill leachate and tested the liquids after 1, 7, and 30 days. After 30 days with alkaline AA batteries, the seawater sample reached pH 11 and the landfill leachate sample reached pH 10. The seawater results indicated that electrolyte had leaked from the cells. The rainwater results suggested little leakage of internal components under the test conditions.</p>
+        <a href="https://www.scielo.br/j/qn/a/TGnzqDD3GwWZCpF6mQwgqkM/?lang=pt" target="_blank" rel="noopener noreferrer">C&acirc;mara et al. (2012), Qu&iacute;mica Nova</a>
+      </article>
+      <article id="risk-ewaste" class="risk-panel" role="tabpanel" aria-labelledby="risk-tab-ewaste" tabindex="0" hidden>
+        <h3>14%</h3>
+        <p class="risk-context">Had blood lead levels above 10 micrograms per deciliter</p>
+        <p>A 2024 study of 327 volunteers at and around the informal e-waste recycling site in Agbogbloshie, Ghana, reported this finding. Unsafe dismantling can release lead into dust and expose workers and people nearby.</p>
+        <p>Lead exposure can harm the nervous system. Children are especially vulnerable.</p>
+        <a href="https://publications.rwth-aachen.de/record/986322/files/986322.pdf" target="_blank" rel="noopener noreferrer">P&uuml;schel et al. (2024)</a>
+      </article>
+    </section>
     <section id="scan" class="surface">
       <h2>Scan an item</h2>
       <p>Hold one item in view with its label facing the camera.</p>
@@ -90,7 +143,6 @@
         <h2 id="scan-history-title">Recent searches</h2>
         <button id="scan-history-clear" class="secondary" type="button" hidden>Clear history</button>
       </div>
-      <p class="note">Saved in this browser. Photos are excluded.</p>
       <p id="scan-history-empty" role="status">No searches yet.</p>
       <ul id="scan-history-list" aria-label="Recent search results"></ul>
       <button id="scan-history-more" class="secondary" type="button" aria-controls="scan-history-list" aria-expanded="false" hidden>See more</button>
